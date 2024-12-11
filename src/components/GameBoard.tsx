@@ -30,6 +30,28 @@ const GameBoard = () => {
     gameEngineRef.current?.rotatePiece('z');
   };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (!gameEngineRef.current) return;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        gameEngineRef.current.movePiece('left');
+        break;
+      case 'ArrowRight':
+        gameEngineRef.current.movePiece('right');
+        break;
+      case 'ArrowUp':
+        gameEngineRef.current.movePiece('forward');
+        break;
+      case 'ArrowDown':
+        gameEngineRef.current.movePiece('backward');
+        break;
+      case ' ': // Space bar
+        gameEngineRef.current.movePiece('down');
+        break;
+    }
+  };
+
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -41,6 +63,9 @@ const GameBoard = () => {
 
     // Spawn initial piece
     spawnNewPiece();
+
+    // Add keyboard controls
+    window.addEventListener('keydown', handleKeyDown);
 
     // Start animation loop
     sceneManager.animate(() => {
@@ -54,6 +79,7 @@ const GameBoard = () => {
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
       sceneManager.cleanup();
     };
   }, []);
