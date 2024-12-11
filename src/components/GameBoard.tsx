@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { OrbitControls as OrbitControlsImpl } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControlsImpl } from 'three/addons/controls/OrbitControls.js';
+import { PieceDefinition, createPieceMesh, getRandomPiece } from '../utils/pieces';
 
 const GameBoard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -8,6 +9,46 @@ const GameBoard = () => {
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const rendererRef = useRef<THREE.WebGLRenderer>();
   const controlsRef = useRef<OrbitControlsImpl>();
+  const currentPieceRef = useRef<THREE.Group>();
+  
+  const [score, setScore] = useState(0);
+  const [nextPiece, setNextPiece] = useState<PieceDefinition>(getRandomPiece());
+
+  const spawnNewPiece = () => {
+    if (!sceneRef.current) return;
+
+    // Remove the current piece if it exists
+    if (currentPieceRef.current) {
+      sceneRef.current.remove(currentPieceRef.current);
+    }
+
+    // Create new piece
+    const piece = createPieceMesh(nextPiece);
+    piece.position.set(0, 5, 0); // Start from top
+    sceneRef.current.add(piece);
+    currentPieceRef.current = piece;
+
+    // Generate next piece
+    setNextPiece(getRandomPiece());
+  };
+
+  const rotatePiecePitch = () => {
+    if (currentPieceRef.current) {
+      currentPieceRef.current.rotateX(Math.PI / 2);
+    }
+  };
+
+  const rotatePieceYaw = () => {
+    if (currentPieceRef.current) {
+      currentPieceRef.current.rotateY(Math.PI / 2);
+    }
+  };
+
+  const rotatePieceRoll = () => {
+    if (currentPieceRef.current) {
+      currentPieceRef.current.rotateZ(Math.PI / 2);
+    }
+  };
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -90,6 +131,9 @@ const GameBoard = () => {
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
+    // Spawn initial piece
+    spawnNewPiece();
+
     // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
@@ -115,7 +159,28 @@ const GameBoard = () => {
     };
   }, []);
 
-  return <div ref={containerRef} className="game-container" />;
+  return (
+    <div ref={containerRef} className="game-container">
+      <div className="game-ui">
+        <div className="score">Score: {score}</div>
+      </div>
+      <div className="next-piece">
+        <h2 className="text-lg font-semibold mb-2">Next Piece</h2>
+        <div className="w-20 h-20 bg-black/30 rounded"></div>
+      </div>
+      <div className="controls">
+        <button onClick={rotatePiecePitch} className="bg-black/20 border-white/20 px-4 py-2 rounded text-white">
+          Rotate X
+        </button>
+        <button onClick={rotatePieceYaw} className="bg-black/20 border-white/20 px-4 py-2 rounded text-white">
+          Rotate Y
+        </button>
+        <button onClick={rotatePieceRoll} className="bg-black/20 border-white/20 px-4 py-2 rounded text-white">
+          Rotate Z
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default GameBoard;
