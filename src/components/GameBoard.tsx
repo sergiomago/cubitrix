@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { OrbitControlsImpl } from 'three/addons/controls/OrbitControls.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { PieceDefinition, createPieceMesh, getRandomPiece } from '../utils/pieces';
+import GameUI from "@/components/GameUI";
 
 const GameBoard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>();
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const rendererRef = useRef<THREE.WebGLRenderer>();
-  const controlsRef = useRef<OrbitControlsImpl>();
+  const controlsRef = useRef<OrbitControls>();
   const currentPieceRef = useRef<THREE.Group>();
   
   const [score, setScore] = useState(0);
@@ -75,7 +76,7 @@ const GameBoard = () => {
     rendererRef.current = renderer;
 
     // Controls setup
-    const controls = new OrbitControlsImpl(camera, renderer.domElement);
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controlsRef.current = controls;
 
@@ -161,24 +162,12 @@ const GameBoard = () => {
 
   return (
     <div ref={containerRef} className="game-container">
-      <div className="game-ui">
-        <div className="score">Score: {score}</div>
-      </div>
-      <div className="next-piece">
-        <h2 className="text-lg font-semibold mb-2">Next Piece</h2>
-        <div className="w-20 h-20 bg-black/30 rounded"></div>
-      </div>
-      <div className="controls">
-        <button onClick={rotatePiecePitch} className="bg-black/20 border-white/20 px-4 py-2 rounded text-white">
-          Rotate X
-        </button>
-        <button onClick={rotatePieceYaw} className="bg-black/20 border-white/20 px-4 py-2 rounded text-white">
-          Rotate Y
-        </button>
-        <button onClick={rotatePieceRoll} className="bg-black/20 border-white/20 px-4 py-2 rounded text-white">
-          Rotate Z
-        </button>
-      </div>
+      <GameUI 
+        score={score}
+        onRotateX={rotatePiecePitch}
+        onRotateY={rotatePieceYaw}
+        onRotateZ={rotatePieceRoll}
+      />
     </div>
   );
 };
