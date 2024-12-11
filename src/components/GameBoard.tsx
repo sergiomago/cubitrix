@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls as OrbitControlsImpl } from 'three/addons/controls/OrbitControls.js';
 
 const GameBoard = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene>();
   const cameraRef = useRef<THREE.PerspectiveCamera>();
   const rendererRef = useRef<THREE.WebGLRenderer>();
-  const controlsRef = useRef<OrbitControls>();
+  const controlsRef = useRef<OrbitControlsImpl>();
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -34,7 +34,7 @@ const GameBoard = () => {
     rendererRef.current = renderer;
 
     // Controls setup
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControlsImpl(camera, renderer.domElement);
     controls.enableDamping = true;
     controlsRef.current = controls;
 
