@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { SceneManager } from '../../utils/sceneManager';
 import { GameEngine } from '../../utils/gameEngine';
+import { getRandomPiece } from '../../utils/pieces';
 
 interface GameSceneProps {
   onScoreChange: (score: number) => void;
@@ -21,9 +22,14 @@ const GameScene = ({ onScoreChange, onNextPieceChange }: GameSceneProps) => {
     const gameEngine = new GameEngine(sceneManager.getScene());
     gameEngineRef.current = gameEngine;
 
+    // Spawn initial piece
+    const initialPiece = getRandomPiece();
+    gameEngine.spawnPiece(initialPiece);
+    onNextPieceChange(getRandomPiece());
+
     // Start animation loop
     sceneManager.animate(() => {
-      // Game loop logic will go here
+      // Game loop logic here
     });
 
     // Handle window resize
@@ -35,7 +41,7 @@ const GameScene = ({ onScoreChange, onNextPieceChange }: GameSceneProps) => {
       window.removeEventListener('resize', handleResize);
       sceneManager.cleanup();
     };
-  }, []);
+  }, [onNextPieceChange]);
 
   return <div ref={containerRef} className="game-canvas" />;
 };

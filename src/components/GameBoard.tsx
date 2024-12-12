@@ -20,27 +20,33 @@ const GameBoard = () => {
   };
 
   const rotatePiecePitch = () => {
-    gameEngineRef.current?.rotatePiece('x');
+    if (!gameEngineRef.current) return;
+    gameEngineRef.current.rotatePiece('x');
   };
 
   const rotatePieceYaw = () => {
-    gameEngineRef.current?.rotatePiece('y');
+    if (!gameEngineRef.current) return;
+    gameEngineRef.current.rotatePiece('y');
   };
 
   const rotatePieceRoll = () => {
-    gameEngineRef.current?.rotatePiece('z');
+    if (!gameEngineRef.current) return;
+    gameEngineRef.current.rotatePiece('z');
   };
 
   const rotateCubePitch = () => {
-    gameEngineRef.current?.rotateMainCube('x');
+    if (!gameEngineRef.current) return;
+    gameEngineRef.current.rotateMainCube('x');
   };
 
   const rotateCubeYaw = () => {
-    gameEngineRef.current?.rotateMainCube('y');
+    if (!gameEngineRef.current) return;
+    gameEngineRef.current.rotateMainCube('y');
   };
 
   const rotateCubeRoll = () => {
-    gameEngineRef.current?.rotateMainCube('z');
+    if (!gameEngineRef.current) return;
+    gameEngineRef.current.rotateMainCube('z');
   };
 
   return (
