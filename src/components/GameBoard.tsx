@@ -32,6 +32,18 @@ const GameBoard = () => {
     gameEngineRef.current?.rotatePiece('z');
   };
 
+  const rotateCubePitch = () => {
+    gameEngineRef.current?.rotateMainCube('x');
+  };
+
+  const rotateCubeYaw = () => {
+    gameEngineRef.current?.rotateMainCube('y');
+  };
+
+  const rotateCubeRoll = () => {
+    gameEngineRef.current?.rotateMainCube('z');
+  };
+
   const handleKeyDown = (event: KeyboardEvent) => {
     if (!gameEngineRef.current) return;
 
@@ -93,9 +105,13 @@ const GameBoard = () => {
     <div ref={containerRef} className="game-container">
       <GameUI 
         score={score}
+        nextPiece={nextPiece}
         onRotateX={rotatePiecePitch}
         onRotateY={rotatePieceYaw}
         onRotateZ={rotatePieceRoll}
+        onRotateCubeX={rotateCubePitch}
+        onRotateCubeY={rotateCubeYaw}
+        onRotateCubeZ={rotateCubeRoll}
       />
     </div>
   );

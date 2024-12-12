@@ -66,5 +66,5 @@
 }
 
 .controls {
-  @apply absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-4 text-white z-10;
+  @apply absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/20 backdrop-blur-sm rounded-lg p-4 z-10;
 }

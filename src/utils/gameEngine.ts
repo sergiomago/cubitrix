@@ -9,11 +9,29 @@ export class GameEngine {
   private grid: Grid;
   private pieceManager: PieceManager;
   private gridSize = 5;
+  private mainCube: THREE.Group;
 
   constructor(scene: THREE.Scene) {
     this.scene = scene;
     this.grid = new Grid(this.gridSize);
     this.pieceManager = new PieceManager(scene, this.grid);
+    this.mainCube = this.createMainCube();
+    this.scene.add(this.mainCube);
+  }
+
+  private createMainCube() {
+    const group = new THREE.Group();
+    const size = this.gridSize;
+    const geometry = new THREE.BoxGeometry(size, size, size);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x808080,
+      transparent: true,
+      opacity: 0.1,
+      wireframe: true
+    });
+    const cube = new THREE.Mesh(geometry, material);
+    group.add(cube);
+    return group;
   }
 
   public rotatePiece(axis: 'x' | 'y' | 'z') {
@@ -33,9 +51,25 @@ export class GameEngine {
     }
   }
 
+  public rotateMainCube(axis: 'x' | 'y' | 'z') {
+    if (!this.mainCube) return;
+    
+    switch (axis) {
+      case 'x':
+        this.mainCube.rotateX(Math.PI / 2);
+        break;
+      case 'y':
+        this.mainCube.rotateY(Math.PI / 2);
+        break;
+      case 'z':
+        this.mainCube.rotateZ(Math.PI / 2);
+        break;
+    }
+  }
+
   public movePiece(direction: 'left' | 'right' | 'forward' | 'backward' | 'down') {
     const currentPiece = this.pieceManager.getCurrentPiece();
-    if (!currentPiece) return;
+    if (!currentPiece) return false;
     
     const moveAmount = 1;
     const originalPosition = currentPiece.position.clone();
@@ -72,8 +106,6 @@ export class GameEngine {
         if (canPlace) {
           this.pieceManager.placePiece();
           return true; // Indicate piece was placed
-        } else {
-          currentPiece.position.y += moveAmount;
         }
       }
       return false;
