@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { PieceDefinition } from "@/utils/pieces";
+import PiecePreview from "./game/PiecePreview";
 
 interface GameUIProps {
   score: number;
@@ -29,11 +30,7 @@ const GameUI = ({
       </div>
       <div className="next-piece">
         <h2 className="text-lg font-semibold mb-2">Next Piece</h2>
-        <div className="w-20 h-20 bg-black/30 rounded flex items-center justify-center">
-          <div className="text-white text-sm">
-            {nextPiece.blocks.length} blocks
-          </div>
-        </div>
+        <PiecePreview piece={nextPiece} />
       </div>
       <div className="controls">
         <div className="flex flex-col gap-4">
