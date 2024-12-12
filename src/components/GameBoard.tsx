@@ -14,8 +14,10 @@ const GameBoard = () => {
 
   const spawnNewPiece = () => {
     if (!gameEngineRef.current) return;
-    gameEngineRef.current.spawnPiece(nextPiece);
-    setNextPiece(getRandomPiece());
+    const wasPlaced = gameEngineRef.current.spawnPiece(nextPiece);
+    if (wasPlaced) {
+      setNextPiece(getRandomPiece());
+    }
   };
 
   const rotatePiecePitch = () => {
@@ -47,7 +49,10 @@ const GameBoard = () => {
         gameEngineRef.current.movePiece('backward');
         break;
       case ' ': // Space bar
-        gameEngineRef.current.movePiece('down');
+        const wasPlaced = gameEngineRef.current.movePiece('down');
+        if (wasPlaced) {
+          spawnNewPiece();
+        }
         break;
     }
   };
