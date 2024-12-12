@@ -61,7 +61,7 @@ const GameBoard = () => {
     const gameEngine = new GameEngine(sceneManager.getScene());
     gameEngineRef.current = gameEngine;
 
-    // Spawn initial piece
+    // Spawn initial piece for gameplay
     spawnNewPiece();
 
     // Add keyboard controls

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { PieceDefinition } from './pieces';
+import { isAdjacentToExistingPiece } from './placementRules';
 
 export class GameEngine {
   private scene: THREE.Scene;
@@ -11,6 +12,7 @@ export class GameEngine {
   constructor(scene: THREE.Scene) {
     this.scene = scene;
     this.initializeGrid();
+    this.spawnInitialCenterPiece();
   }
 
   private initializeGrid() {
@@ -19,6 +21,23 @@ export class GameEngine {
         Array(this.gridSize).fill(false)
       )
     );
+  }
+
+  private spawnInitialCenterPiece() {
+    const centerPiece: PieceDefinition = {
+      blocks: [[0, 0, 0]],
+      color: '#888888'
+    };
+    const piece = this.createPieceMesh(centerPiece);
+    piece.position.set(0, Math.floor(this.gridSize/2), 0);
+    this.scene.add(piece);
+    this.placedPieces.push(piece);
+    
+    // Update grid with center piece
+    const centerX = Math.floor(this.gridSize/2);
+    const centerY = Math.floor(this.gridSize/2);
+    const centerZ = Math.floor(this.gridSize/2);
+    this.grid[centerX][centerY][centerZ] = true;
   }
 
   public spawnPiece(piece: PieceDefinition) {
@@ -75,7 +94,21 @@ export class GameEngine {
     if (this.checkCollision()) {
       this.currentPiece.position.copy(originalPosition);
       if (direction === 'down') {
-        this.placePiece();
+        // Only place the piece if it's adjacent to another piece
+        const blocks = this.getCurrentPieceBlocks();
+        let canPlace = false;
+        for (const position of blocks) {
+          if (isAdjacentToExistingPiece(position, this.placedPieces, this.gridSize)) {
+            canPlace = true;
+            break;
+          }
+        }
+        if (canPlace) {
+          this.placePiece();
+        } else {
+          // If not adjacent, move the piece back up
+          this.currentPiece.position.y += moveAmount;
+        }
       }
       return false;
     }
